@@ -1,0 +1,11 @@
+clusterIssuer:
+  name: letsencrypt-prod
+  email: "notarealemail@gmail.com"
+  server: "https://acme-v02.api.letsencrypt.org/directory"
+  privateKeySecretRef:
+    name: letsencrypt-prod
+  solvers:
+    cloudflare:
+      apiTokenSecretRef:
+        name: cloudflare-api-credentials
+        key: apiKey
