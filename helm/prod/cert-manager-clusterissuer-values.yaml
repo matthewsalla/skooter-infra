@@ -7,5 +7,5 @@ clusterIssuer:
   solvers:
     cloudflare:
       apiTokenSecretRef:
-        name: cloudflare-api-credentials
+        name: cert-manager-cloudflare-api-credentials
         key: apiKey

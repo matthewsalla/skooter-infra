@@ -12,7 +12,7 @@ source base/terraform/scripts/nuke-deploy-cluster.sh staging
 bash base/scripts/deploy-sealed-secrets.sh
 
 # Step 2: Restore Sealed Secrets Key
-bash scripts/restore-sealed-secrets.sh
+# bash scripts/restore-sealed-secrets.sh
 
 # Step 3: Deploy Cert-Manager
 bash base/scripts/deploy-cert-manager.sh
@@ -21,10 +21,10 @@ bash base/scripts/deploy-cert-manager.sh
 bash base/scripts/deploy-traefik.sh
 
 # Step 5: Deploy Longhorn
-bash base/scripts/deploy-longhorn.sh
+# bash base/scripts/deploy-longhorn.sh
 
 # Step 6: Deploy Monitoring Tools
-bash base/scripts/deploy-monitoring.sh
+# bash base/scripts/deploy-monitoring.sh
 
 # Step X: Deploy TriliumNext
 # bash base/scripts/deploy-trilium.sh

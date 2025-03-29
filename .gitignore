@@ -1,4 +1,5 @@
 .env
+helm_credentials.txt
 
 # Ignore helm chart lock files
 Chart.lock
