@@ -20,4 +20,4 @@ scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$SCRIPT_PATH" "
 
 # === Remotely set permissions and run the script ===
 echo "🚀 Executing remote commands on $HOST..."
-ssh -tt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$USERNAME@$HOST" "chmod +x ~/$REMOTE_SCRIPT_NAME && echo '🚀 Running script with sudo...' && sudo -E bash ~/$REMOTE_SCRIPT_NAME"
+ssh -tt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$USERNAME@$HOST" "chmod +x ~/$REMOTE_SCRIPT_NAME && echo '🚀 Running script with sudo...' && sudo -E bash ~/$REMOTE_SCRIPT_NAME && echo '🔄 Rebooting server...' && sudo reboot"
