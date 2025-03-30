@@ -1,0 +1,42 @@
+additionalArguments:
+  - "--entrypoints.websecure.http.middlewares=traefik-hsts@kubernetescrd"
+  - "--entryPoints.ssh.address=:222"
+
+ports:
+  ssh:
+    port: 222             # Container port 222
+    expose:
+      default: true
+    exposePort: 3222      # The external LB or NodePort
+    protocol: TCP
+    entryPoint: ssh       # Ties this port to the “ssh” entry point
+
+env:
+  - name: CF_API_EMAIL
+    valueFrom:
+      secretKeyRef:
+        key: email
+        name: traefik-cloudflare-api-credentials
+  - name: CF_API_KEY
+    valueFrom:
+      secretKeyRef:
+        key: apiKey
+        name: traefik-cloudflare-api-credentials
+
+ingressRoute:
+  dashboard:
+    enabled: false
+
+certIssuer: letsencrypt-staging
+
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addServicesLabels: true
+
+providers:
+  kubernetesCRD: {}
+  kubernetesIngress:
+    publishedService:
+      enabled: true
