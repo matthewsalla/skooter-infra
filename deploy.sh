@@ -10,10 +10,12 @@ source base/terraform/scripts/nuke-deploy-cluster.sh staging
 
 # Step 1: Handle Sealed Secrets (restore or deploy)
 PEM_FILE="secrets/sealed-secret-controller-cert.pem"
+SKIP_HELM_SECRETS=false
 
 if [ -f "$PEM_FILE" ]; then
   echo "🔁 Existing PEM found at $PEM_FILE. Restoring Sealed Secrets key..."
   bash scripts/restore-sealed-secrets.sh
+  SKIP_HELM_SECRETS=true
 else
   echo "🔐 No PEM file found. Generating Sealed Secrets key..."
   bash base/scripts/generate-sealed-secrets-key.sh
@@ -23,14 +25,19 @@ echo "🚀 Deploying Sealed Secrets..."
 bash base/scripts/deploy-sealed-secrets.sh
 
 # Step 2: Deploy sealed secrets used by Helm-based apps
-echo "🔐 Applying sealed secrets for app deployments..."
-while IFS= read -r line || [ -n "$line" ]; do
-  [[ "$line" =~ ^#.*$ ]] && continue
-  [[ -z "$line" ]] && continue
-  bash base/scripts/generate-sealed-secret.sh $line
-# TODO: Store helm_credentials in bitwarden
-done < ./secrets/helm_credentials.txt
-echo "✅ All app-related sealed secrets applied!"
+if [ "$SKIP_HELM_SECRETS" = false ]; then
+  echo "🔐 Applying sealed secrets for app deployments..."
+  while IFS= read -r line || [ -n "$line" ]; do
+    # Skip comment and empty lines
+    [[ "$line" =~ ^#.*$ ]] && continue
+    [[ -z "$line" ]] && continue
+    bash base/scripts/generate-sealed-secret.sh "$line"
+  # TODO: Store helm_credentials in bitwarden
+  done < ./secrets/helm_credentials.txt
+  echo "✅ All app-related sealed secrets applied!"
+else
+  echo "🔁 Skipping Helm-based app sealed secrets deployment because PEM file existed."
+fi
 
 # Step 3: Deploy Cert-Manager
 bash base/scripts/deploy-cert-manager.sh
@@ -39,7 +46,7 @@ bash base/scripts/deploy-cert-manager.sh
 bash base/scripts/deploy-traefik.sh
 
 # Step 5: Deploy Longhorn
-# bash base/scripts/deploy-longhorn.sh
+bash base/scripts/deploy-longhorn.sh
 
 # Step 6: Deploy Monitoring Tools
 # bash base/scripts/deploy-monitoring.sh
