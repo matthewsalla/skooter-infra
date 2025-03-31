@@ -1,0 +1,2 @@
+# Backup volumes
+base/scripts/longhorn-automation.sh backup trilium
