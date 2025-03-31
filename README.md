@@ -68,6 +68,7 @@ Let’s say in a few days or weeks, you make updates to your GitHub `skooter-inf
 ```bash
 git clone git@git.github.com:exampleorg/skooter-example-org-infra.git
 cd skooter-example-org-infra
+git submodule update --init --recursive
 ```
 
 ---
