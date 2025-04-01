@@ -25,7 +25,10 @@ if [ "$MODE" == "init" ]; then
   echo "=== PHASE 1: Initial Setup ==="
   echo "Cloning the GitHub template repository..."
   git clone "$GITHUB_TEMPLATE"
-  cd skooter-infra
+  
+  # Extract directory name from the GITHUB_TEMPLATE URL
+  TEMPLATE_DIR=$(basename -s .git "$GITHUB_TEMPLATE")
+  cd "$TEMPLATE_DIR"
   
   echo "Renaming origin to upstream..."
   git remote rename origin upstream
@@ -44,8 +47,10 @@ elif [ "$MODE" == "update" ]; then
   echo "=== PHASE 2: Update from Template ==="
   echo "Cloning your Gitea thin repo..."
   git clone "$GITEA_REPO"
-  # Assumes the repo directory name is the same as in the URL (skooter-example-org-infra)
-  cd skooter-example-org-infra
+  
+  # Extract directory name from the GITEA_REPO URL
+  REPO_DIR=$(basename -s .git "$GITEA_REPO")
+  cd "$REPO_DIR"
   
   echo "Updating submodules..."
   git submodule update --init --recursive
