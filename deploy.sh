@@ -14,7 +14,7 @@ SKIP_HELM_SECRETS=false
 
 if [ -f "$PEM_FILE" ]; then
   echo "🔁 Existing PEM found at $PEM_FILE. Restoring Sealed Secrets key..."
-  bash scripts/restore-sealed-secrets.sh
+  bash base/scripts/secrets/restore-cluster-key-keychain-bw-workflow.sh
   SKIP_HELM_SECRETS=true
 else
   echo "🔐 No PEM file found. Generating Sealed Secrets key..."
