@@ -1,9 +1,23 @@
 #!/bin/bash
 # Thin repo: deploy.sh
 
-# Navigate to the base Terraform directory
+# ————————————————————————————————————————————————
+# 1. Navigate to your base Terraform module
+# ————————————————————————————————————————————————
 cd base/terraform || exit
-terraform init
+
+# ————————————————————————————————————————————————
+# 2. Init Terraform with MinIO S3 backend
+#    -backend-config points at your backend.hcl
+#    -reconfigure forces Terraform to pick up the new backend
+# ————————————————————————————————————————————————
+terraform init \
+  -backend-config="../../terraform/backend.hcl" \
+  -reconfigure
+
+# ————————————————————————————————————————————————
+# 3. Return to repo root
+# ————————————————————————————————————————————————
 cd ../.. || exit
 
 source base/terraform/scripts/nuke-deploy-cluster.sh staging
