@@ -1,9 +1,23 @@
 #!/bin/bash
 # Thin repo: deploy.sh
 
-# Navigate to the base Terraform directory
+# ————————————————————————————————————————————————
+# 1. Navigate to your base Terraform module
+# ————————————————————————————————————————————————
 cd base/terraform || exit
-terraform init
+
+# ————————————————————————————————————————————————
+# 2. Init Terraform with MinIO S3 backend
+#    -backend-config points at your backend.hcl
+#    -reconfigure forces Terraform to pick up the new backend
+# ————————————————————————————————————————————————
+terraform init \
+  -backend-config="../../terraform/backend.hcl" \
+  -reconfigure
+
+# ————————————————————————————————————————————————
+# 3. Return to repo root
+# ————————————————————————————————————————————————
 cd ../.. || exit
 
 source base/terraform/scripts/nuke-deploy-cluster.sh staging
@@ -27,13 +41,7 @@ bash base/scripts/deploy-sealed-secrets.sh
 # Step 2: Deploy sealed secrets used by Helm-based apps
 if [ "$SKIP_HELM_SECRETS" = false ]; then
   echo "🔐 Applying sealed secrets for app deployments..."
-  while IFS= read -r line || [ -n "$line" ]; do
-    # Skip comment and empty lines
-    [[ "$line" =~ ^#.*$ ]] && continue
-    [[ -z "$line" ]] && continue
-    bash base/scripts/generate-sealed-secret.sh "$line"
-  # TODO: Store helm_credentials in bitwarden
-  done < ./secrets/helm_credentials.txt
+  bash base/scripts/secrets/apply-helm-secrets.sh
   echo "✅ All app-related sealed secrets applied!"
 else
   echo "🔁 Skipping Helm-based app sealed secrets deployment because PEM file existed."
@@ -46,10 +54,10 @@ bash base/scripts/deploy-cert-manager.sh
 bash base/scripts/deploy-traefik.sh
 
 # Step 5: Deploy Longhorn
-bash base/scripts/deploy-longhorn.sh
+bash base/scripts/deployments/deploy-longhorn.sh
 
 # Step 6: Deploy Monitoring Tools
-# bash base/scripts/deploy-monitoring.sh
+# bash base/scripts/deployments/deploy-monitoring.sh
 
 # Step X: Deploy TriliumNext
 # bash base/scripts/deploy-trilium.sh
@@ -59,5 +67,14 @@ bash base/scripts/deploy-longhorn.sh
 
 # Step X: Deploy Gitea
 # bash base/scripts/deploy-gitea.sh
+
+# Step X: Deploy Nextcloud
+# bash base/scripts/deployments/deploy-nextcloud.sh
+
+# Step X: Deploy OnlyOffice
+# bash base/scripts/deployments/deploy-nextcloud-onlyoffice.sh
+
+# Step X: Deploy draw.io
+# bash base/scripts/deployments/deploy-nextcloud-drawio.sh
 
 echo "✅ Deployment Completed Successfully!"

@@ -112,3 +112,74 @@ Then later:
  git fetch upstream
  git merge upstream/main  ← (bring in new template changes)
 ```
+
+# 🗂️ Terraform Remote State – MinIO S3
+
+This setup configures Terraform to store state in a private **MinIO** S3 bucket using `backend.hcl`.
+
+---
+
+## 🔧 Backend Details
+
+- **Bucket**: `terraform`  
+- **Key**: `terraform.tfstate`  
+- **Endpoint**: `http://192.168.14.222:9900`  
+- **Auth**: Access key/secret (e.g. `terraform / SuperSecretPassword123`)
+
+---
+
+## 📁 File Structure
+
+```plaintext
+terraform/
+├── backend.hcl     # MinIO S3 backend settings
+├── README.md       # This file
+```
+
+---
+
+## 🚀 Usage
+
+Run from your base module directory:
+
+```bash
+cd base/terraform
+
+terraform init \
+  -backend-config=../../terraform/backend.hcl \
+  -reconfigure
+```
+
+---
+
+## 🧾 backend.hcl Example
+
+```hcl
+bucket                      = "terraform"
+key                         = "terraform.tfstate"
+region                      = "us-east-1"
+
+access_key                  = "terraform"
+secret_key                  = "SuperSecretPassword123"
+endpoints                   = { s3 = "http://192.168.14.222:9900" }
+use_path_style              = true
+
+skip_region_validation      = true
+skip_credentials_validation = true
+skip_metadata_api_check     = true
+skip_requesting_account_id  = true
+```
+
+---
+
+## 🛡️ Tips
+
+- ✅ Use `readwrite` policy in MinIO for the `terraform` user  
+- 🔐 Replace hardcoded creds with env vars for production  
+- 🧪 Validate state with:
+
+  ```bash
+  aws --endpoint-url http://192.168.14.222:9900 s3 ls s3://terraform/
+  ```
+
+---
