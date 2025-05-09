@@ -20,7 +20,7 @@ terraform init \
 # ————————————————————————————————————————————————
 cd ../.. || exit
 
-source base/terraform/scripts/nuke-deploy-cluster.sh staging
+source base/terraform/scripts/nuke-deploy-cluster.sh staging --yes
 
 # Step 1: Handle Sealed Secrets (restore or deploy)
 PEM_FILE="secrets/sealed-secret-controller-cert.pem"
@@ -69,12 +69,12 @@ bash base/scripts/deployments/deploy-longhorn.sh
 # bash base/scripts/deploy-gitea.sh
 
 # Step X: Deploy Nextcloud
-# bash base/scripts/deployments/deploy-nextcloud.sh
+bash base/scripts/deployments/deploy-nextcloud.sh
 
 # Step X: Deploy OnlyOffice
-# bash base/scripts/deployments/deploy-nextcloud-onlyoffice.sh
+bash base/scripts/deployments/deploy-nextcloud-onlyoffice.sh
 
 # Step X: Deploy draw.io
-# bash base/scripts/deployments/deploy-nextcloud-drawio.sh
+bash base/scripts/deployments/deploy-nextcloud-drawio.sh
 
 echo "✅ Deployment Completed Successfully!"
