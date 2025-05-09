@@ -5,6 +5,7 @@ export SECRETS_PATH="./secrets"
 export MANIFESTS_PATH="./kubernetes/manifests"
 export MIDDLEWARES_PATH="./base/kubernetes/manifests/middlewares"
 export HELM_VALUES_PATH="./helm"
+export HELM_VOLUMES_RESTORE_VALUES_PATH="./helm/restores"
 export HELM_CHARTS_PATH="./base/helm-charts"
 
 # Default values for environment variables
