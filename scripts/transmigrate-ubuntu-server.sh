@@ -161,4 +161,48 @@ pipx install "glances[web]" --force
 pipx ensurepath
 # To start glances in web mode, run: glances -w
 
+###############################
+# 13. Download and Register Ubuntu Base Image for Libvirt
+###############################
+BASE_POOL_NAME="base-image-pool"
+BASE_POOL_PATH="/var/lib/libvirt/base-images"
+QCOW2_NAME="ubuntu-base-uncompressed.qcow2"
+IMAGE_URL="https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+TEMP_IMAGE="/tmp/ubuntu-server-base.img"
+VOL_PATH="${BASE_POOL_PATH}/${QCOW2_NAME}"
+
+echo "🔧 Creating base image pool at ${BASE_POOL_PATH}..."
+mkdir -p "$BASE_POOL_PATH"
+virsh pool-define-as "$BASE_POOL_NAME" dir --target "$BASE_POOL_PATH" 2>/dev/null || true
+virsh pool-build "$BASE_POOL_NAME" 2>/dev/null || true
+virsh pool-start "$BASE_POOL_NAME" 2>/dev/null || true
+virsh pool-autostart "$BASE_POOL_NAME" 2>/dev/null || true
+
+if [ -f "$TEMP_IMAGE" ]; then
+  echo "✅ Found cached image at $TEMP_IMAGE — skipping download."
+else
+  echo "🌐 Downloading Ubuntu 24.04 cloud image to $TEMP_IMAGE..."
+  wget -O "$TEMP_IMAGE" "$IMAGE_URL"
+fi
+
+# Delete previous volume if registered
+if virsh vol-info --pool "$BASE_POOL_NAME" "$QCOW2_NAME" &>/dev/null; then
+  echo "🧹 Deleting existing volume registration..."
+  virsh vol-delete --pool "$BASE_POOL_NAME" "$QCOW2_NAME"
+fi
+
+# Create empty volume (10G) using virsh
+echo "📦 Allocating new volume inside libvirt pool..."
+virsh vol-create-as "$BASE_POOL_NAME" "$QCOW2_NAME" 10G --format qcow2
+
+# Now overwrite contents using qemu-img
+echo "🛠️ Converting and writing image contents to volume..."
+qemu-img convert -f qcow2 -O qcow2 "$TEMP_IMAGE" "$VOL_PATH"
+
+echo "🔐 Setting permissions..."
+chown libvirt-qemu:kvm "$VOL_PATH"
+chmod 644 "$VOL_PATH"
+
+echo "✅ Ubuntu base image is ready at '$VOL_PATH' in pool '$BASE_POOL_NAME'."
+
 echo "Setup complete. Please log out and log back in for all group changes to take effect."
