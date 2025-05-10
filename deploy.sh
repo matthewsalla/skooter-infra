@@ -1,6 +1,9 @@
 #!/bin/bash
 # Thin repo: deploy.sh
 
+# record start time
+start_time=$(date +%s)
+
 # ————————————————————————————————————————————————
 # 1. Navigate to your base Terraform module
 # ————————————————————————————————————————————————
@@ -78,3 +81,11 @@ bash base/scripts/deployments/deploy-nextcloud-onlyoffice.sh
 bash base/scripts/deployments/deploy-nextcloud-drawio.sh
 
 echo "✅ Deployment Completed Successfully!"
+
+# record end time and compute elapsed
+end_time=$(date +%s)
+elapsed=$(( end_time - start_time ))
+minutes=$(( elapsed / 60 ))
+seconds=$(( elapsed % 60 ))
+
+echo "⏱ Total elapsed time: ${minutes}m ${seconds}s"
