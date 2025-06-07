@@ -2,6 +2,7 @@
 # Thin repo: deploy.sh
 
 # record start time
+echo "🕐 Skooter Begin"
 start_time=$(date +%s)
 
 # ————————————————————————————————————————————————
@@ -63,7 +64,10 @@ bash base/scripts/deployments/deploy-longhorn.sh
 # bash base/scripts/deployments/deploy-monitoring.sh
 
 # Step X: Deploy TriliumNext
-# bash base/scripts/deploy-trilium.sh
+# bash base/scripts/deployments/deploy-trilium.sh
+
+# Step X: Deploy Planka
+# bash base/scripts/deployments/deploy-planka.sh
 
 # Step X: Deploy Mealie
 # bash base/scripts/deploy-mealie.sh
@@ -80,7 +84,7 @@ bash base/scripts/deployments/deploy-nextcloud-onlyoffice.sh
 # Step X: Deploy draw.io
 bash base/scripts/deployments/deploy-nextcloud-drawio.sh
 
-echo "✅ Deployment Completed Successfully!"
+echo "🕛 Apps deployed"
 
 # record end time and compute elapsed
 end_time=$(date +%s)
@@ -89,3 +93,5 @@ minutes=$(( elapsed / 60 ))
 seconds=$(( elapsed % 60 ))
 
 echo "⏱ Total elapsed time: ${minutes}m ${seconds}s"
+
+echo "✅ Deployment Completed Successfully!"
