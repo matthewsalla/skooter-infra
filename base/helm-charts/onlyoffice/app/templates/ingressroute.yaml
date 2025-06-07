@@ -1,0 +1,25 @@
+{{- if .Values.ingressroute.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- range $key, $value := .Values.ingressroute.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: "Host(`{{ .Values.ingressroute.host }}`)"
+      kind: Rule
+      middlewares:
+        - name: onlyoffice-secure-headers
+          namespace: nextcloud
+      services:
+        - name: documentserver
+          port: {{ .Values.onlyoffice.service.port }}
+  tls:
+    secretName: {{ .Values.ingressroute.tls.secretName }}
+{{- end }}

@@ -1,0 +1,28 @@
+apiVersion: v2
+name: onlyoffice-backend
+description: Redis & PostgreSQL dependencies
+type: application
+version: 0.1.0
+appVersion: "8.3.2"
+
+dependencies:
+  - name: postgresql
+    version: 15.5.0
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    condition: postgresql.enabled
+    tags:
+      - database
+
+  - name: redis
+    version: 19.6.4
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    condition: redis.enabled
+    tags:
+      - cache
+
+  - name: rabbitmq
+    version: 16.0.1
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    condition: rabbitmq.enabled
+    tags:
+      - messaging

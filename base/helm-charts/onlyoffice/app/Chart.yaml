@@ -1,0 +1,13 @@
+apiVersion: v2
+name: onlyoffice
+description: OnlyOffice Docs with Redis & PostgreSQL dependencies
+type: application
+version: 0.1.0
+appVersion: "8.3.2"
+
+dependencies:
+  - name: docs
+    alias: onlyoffice
+    version: 4.6.0
+    repository: "https://download.onlyoffice.com/charts/stable"
+    condition: onlyoffice.enabled

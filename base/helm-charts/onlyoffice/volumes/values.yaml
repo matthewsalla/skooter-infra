@@ -1,0 +1,31 @@
+onlyoffice-files:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "onlyoffice-files-pvc"
+    pvName: "onlyoffice-files-pv"
+    size: "4Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://exampleorg@minio.example.com/longhorn?backup=dummy_backup_id&volume=onlyoffice-files-pv"
+
+onlyoffice-postgres-db:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "onlyoffice-postgres-db-pvc"
+    pvName: "onlyoffice-postgres-db-pv"
+    size: "1Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://longhorn-backups@minio.example.com/longhorn?backup=dummy_backup_id&volume=onlyoffice-postgres-db-pv"

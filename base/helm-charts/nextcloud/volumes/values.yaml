@@ -1,0 +1,47 @@
+nextcloud-data:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "nextcloud-data-pvc"
+    pvName: "nextcloud-data-pv"
+    size: "1Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://exampleorg@minio.example.com/longhorn?backup=dummy_backup_id&volume=nextcloud-data-pv"
+
+nextcloud-config:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "nextcloud-config-pvc"
+    pvName: "nextcloud-config-pv"
+    size: "10Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://exampleorg@minio.example.com/longhorn?backup=dummy_backup_id&volume=nextcloud-config-pv"
+
+nextcloud-postgres-db:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "nextcloud-postgres-db-pvc"
+    pvName: "nextcloud-postgres-db-pv"
+    size: "1Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://longhorn-backups@minio.example.com/longhorn?backup=dummy_backup_id&volume=nextcloud-postgres-db-pv"

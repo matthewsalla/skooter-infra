@@ -1,0 +1,79 @@
+harbor-postgres-db:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "harbor-postgres-db-pvc"
+    pvName: "harbor-postgres-db-pv"
+    size: "1Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://longhorn-backups@minio.example.com/longhorn?backup=dummy_backup_id&volume=gitea-postgres-db-pv"
+
+harbor-registry:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "harbor-registry-pvc"
+    pvName: "harbor-registry-pv"
+    size: "10Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://exampleorg@minio.example.com/longhorn?backup=dummy_backup_id&volume=harbor-registry-pv"
+
+harbor-redis:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "harbor-redis-pvc"
+    pvName: "harbor-redis-pv"
+    size: "1Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://exampleorg@minio.example.com/longhorn?backup=dummy_backup_id&volume=harbor-redis-pv"
+
+harbor-jobservice:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "harbor-jobservice-pvc"
+    pvName: "harbor-jobservice-pv"
+    size: "1Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://exampleorg@minio.example.com/longhorn?backup=dummy_backup_id&volume=harbor-jobservice-pv"
+
+harbor-trivy:
+  persistenceLonghorn:
+    enabled: false
+    restore: false
+    pvcName: "harbor-trivy-pvc"
+    pvName: "harbor-trivy-pv"
+    size: "5Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://exampleorg@minio.example.com/longhorn?backup=dummy_backup_id&volume=harbor-trivy-pv"

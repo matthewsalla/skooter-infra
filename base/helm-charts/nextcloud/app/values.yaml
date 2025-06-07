@@ -1,0 +1,68 @@
+ingressroute:
+  enabled: false
+  host: "nextcloud.example.company"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  tls:
+    secretName: "nextcloud-tls"
+
+certificate:
+  enabled: false
+  name: nextcloud-tls
+  secretName: nextcloud-tls
+  issuer:
+    name: "letsencrypt-staging"
+    kind: ClusterIssuer
+  dnsNames:
+    - nextcloud.example.company
+
+service:
+  port: 80
+
+nextcloud:
+
+  # Configure the Nextcloud application details
+  nextcloud:
+    host: "nextcloud.example.company"        # Set your desired FQDN or IP for Nextcloud
+    username: "admin"                     # Administrator username
+    password: "YourSecurePassword"        # Administrator password (change as needed)
+    trustedDomains:
+      - "nextcloud.example.company"          # Add all domains/IPs that should be trusted
+    # Optionally, you can set a custom data directory:
+    # datadir: "/var/www/html/data"
+
+  # Enable and configure the ingress resource
+  ingress:
+    enabled: false                         # Enable ingress for external access
+
+  # Enable persistence using a PVC and the K3s default storage class ("local-path")
+  persistence:
+    enabled: true                         # Turn on persistent storage
+    storageClass: "local-path"            # Use the K3s default storage class
+    accessMode: ReadWriteOnce             # Typical access mode for single-node writes
+    size: 10Gi                            # Define the storage size as needed
+
+  # Optionally, set resource requests and limits for the Nextcloud pod(s)
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 80
+    periodSeconds: 15
+    timeoutSeconds: 10
+    failureThreshold: 5
+    successThreshold: 1
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 80
+    periodSeconds: 15
+    timeoutSeconds: 10
+    failureThreshold: 5
+    successThreshold: 1

@@ -1,0 +1,56 @@
+{{- $volumeType := index .Values "harbor-jobservice" }}
+{{- if $volumeType.persistenceLonghorn.enabled }}
+
+{{/* Convert a size in Gi (e.g. "48Gi") to bytes */}}
+{{- $sizeStr := $volumeType.persistenceLonghorn.size | trimSuffix "Gi" }}
+{{- $sizeGi := $sizeStr | int }}
+{{- $sizeBytes := mul $sizeGi (mul 1024 (mul 1024 1024)) }}
+
+---
+apiVersion: longhorn.io/v1beta2
+kind: Volume
+metadata:
+  name: {{ $volumeType.persistenceLonghorn.pvName | quote }}
+  namespace: longhorn-system
+spec:
+  numberOfReplicas: {{ $volumeType.persistenceLonghorn.numberOfReplicas }}
+  frontend: {{ $volumeType.persistenceLonghorn.frontend | quote }}
+  backupTargetName: {{ $volumeType.persistenceLonghorn.backupTargetName | quote }}
+  size: "{{ $sizeBytes }}"
+  {{- if $volumeType.persistenceLonghorn.restore }}
+  fromBackup: {{ $volumeType.persistenceLonghorn.fromBackup | quote }}
+  {{- end }}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $volumeType.persistenceLonghorn.pvcName | quote }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - {{ $volumeType.persistenceLonghorn.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ $volumeType.persistenceLonghorn.size | quote }}
+  storageClassName: {{ $volumeType.persistenceLonghorn.storageClassName | quote }}
+  volumeName: {{ $volumeType.persistenceLonghorn.pvName | quote }}
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $volumeType.persistenceLonghorn.pvName | quote }}
+spec:
+  capacity:
+    storage: {{ $volumeType.persistenceLonghorn.size | quote }}
+  volumeMode: Filesystem
+  accessModes:
+    - {{ $volumeType.persistenceLonghorn.accessMode | quote }}
+  persistentVolumeReclaimPolicy: {{ $volumeType.persistenceLonghorn.reclaimPolicy | quote }}
+  storageClassName: {{ $volumeType.persistenceLonghorn.storageClassName | quote }}
+  csi:
+    driver: {{ $volumeType.persistenceLonghorn.csiDriver | quote }}
+    volumeHandle: {{ $volumeType.persistenceLonghorn.pvName | quote }}
+
+{{- end }}

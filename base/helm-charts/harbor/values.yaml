@@ -1,0 +1,48 @@
+harbor:
+  expose:
+    type: clusterIP
+    tls:
+      enabled: false
+
+  externalURL: https://harbor.example.com
+  
+  existingSecretAdminPassword: harbor-admin-secret
+  existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+
+  persistence:
+      enabled: true
+      resourcePolicy: "keep"
+      persistentVolumeClaim:
+        registry:
+          size: 10Gi
+        jobservice:
+          jobLog:
+            size: 1Gi
+        database:
+          size: 1Gi
+        redis:
+          size: 1Gi
+        trivy:
+          size: 5Gi
+
+certificate:
+  enabled: true
+  name: harbor-tls
+  secretName: harbor-tls
+  issuer:
+    name: "letsencrypt-staging"  # This value can be set via your CI/CD pipeline or .env file
+    kind: ClusterIssuer
+  dnsNames:
+    - harbor.example.com
+
+ingressroute:
+  enabled: true
+  host: "harbor.example.com"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  tls:
+    secretName: "harbor-tls"
+
+service:
+  port: 80

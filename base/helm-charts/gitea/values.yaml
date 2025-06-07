@@ -1,0 +1,50 @@
+gitea:
+  nodeSelector:
+    dedicated: gitea
+  persistence:
+    enabled: true      # Make sure persistence is enabled
+    create: true
+    mount: true
+  service:
+    http:
+      clusterIP: ""
+  postgresql:
+    enabled: false
+  postgresql-ha:
+    enabled: false
+  redis:
+    enabled: false
+  redis-cluster:
+    enabled: false
+  gitea:
+    additionalConfigFromEnvs:
+      - name: GITEA__SERVER__ROOT_URL
+        value: https://git.example.com/
+      - name: GITEA__SERVER__DOMAIN
+        value: git.example.com
+      - name: GITEA__SERVER__SSH_DOMAIN
+        value: git.example.com
+    config:
+      database:
+        DB_TYPE: sqlite3
+  actions:
+    enabled: false
+
+ingressroute:
+  enabled: true
+  host: "git.example.com"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  tls:
+    secretName: "gitea-tls"
+
+certificate:
+  enabled: true
+  name: gitea-tls
+  secretName: gitea-tls
+  issuer:
+    name: "letsencrypt-staging"  # This value can be set via your CI/CD pipeline or .env file
+    kind: ClusterIssuer
+  dnsNames:
+    - git.example.com

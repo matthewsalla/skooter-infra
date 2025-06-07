@@ -1,0 +1,31 @@
+planka-data:
+  persistenceLonghorn:
+    enabled: true
+    restore: false
+    pvcName: "planka-data-pvc"
+    pvName: "planka-data-pv"
+    size: "1Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://exampleorg@minio.example.com/longhorn?backup=dummy_backup_id&volume=planka-data-pv"
+
+planka-postgres-db:
+  persistenceLonghorn:
+    enabled: true
+    restore: false
+    pvcName: "planka-postgres-db-pvc"
+    pvName: "planka-postgres-db-pv"
+    size: "1Gi"
+    accessMode: "ReadWriteOnce"
+    reclaimPolicy: "Retain"
+    storageClassName: "longhorn"
+    csiDriver: "driver.longhorn.io"
+    numberOfReplicas: 3
+    frontend: blockdev
+    backupTargetName: default
+    fromBackup: "s3://longhorn-backups@minio.example.com/longhorn?backup=dummy_backup_id&volume=planka-postgres-db-pv"
