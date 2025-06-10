@@ -59,8 +59,12 @@ elif [ "$MODE" == "update" ]; then
   echo "Updating submodules..."
   git submodule update --init --recursive
 
-  echo "Adding GitHub template as upstream..."
-  git remote add upstream "$GITHUB_TEMPLATE" || echo "Upstream already exists."
+  if git remote get-url upstream &>/dev/null; then
+    echo "Upstream remote already exists."
+  else
+    echo "Adding GitHub template as upstream..."
+    git remote add upstream "$GITHUB_TEMPLATE"
+  fi
 
   echo "Fetching updates from upstream..."
   git fetch upstream
