@@ -72,6 +72,9 @@ elif [ "$MODE" == "update" ]; then
   echo "Merging upstream/main into your branch..."
   git merge upstream/main
 
+  echo "Updating base submodule to latest remote commit..."
+  git submodule update --remote base
+
   echo "Pushing merged updates to origin..."
   git push origin main
   echo "Update complete."
