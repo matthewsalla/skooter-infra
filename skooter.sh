@@ -75,6 +75,15 @@ elif [ "$MODE" == "update" ]; then
   echo "Updating base submodule to latest remote commit..."
   git submodule update --remote base
 
+  echo "Committing updated submodule pointer..."
+  git add base
+  if git diff --cached --quiet base; then
+    echo "No changes to base submodule. Skipping commit."
+  else
+    git commit -m "Update base submodule to latest"
+    git push origin main
+  fi
+
   echo "Pushing merged updates to origin..."
   git push origin main
   echo "Update complete."
