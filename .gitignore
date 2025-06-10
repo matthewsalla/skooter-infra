@@ -1,5 +1,5 @@
 .env
-helm_credentials.txt
+*credentials.txt
 backend.hcl
 
 # Ignore helm chart lock files
