@@ -1,98 +1,81 @@
 # skooter-infra
-Bolt on infrastructure parts for the Skooter Base
 
-## 🧱 PHASE 1: Create Your Thin Repo from the Template
-
-This is **one-time setup** to take your `skooter-infra` GitHub template and use it to seed your `skooter-example-org-infra` thin repo in Gitea.
+Here is your cleaned-up and updated `README.md`, with all unnecessary sections removed and a new concise guide focused solely on using `skooter.sh` for onboarding:
 
 ---
 
-### ✅ Step 1: Clone the GitHub template repo (run this on your Mac)
+````markdown
+# skooter-infra
 
-```bash
-git clone git@github.com:matthewsalla/skooter-infra.git
-cd skooter-infra
-```
-
-This gives you a clean copy of the latest template.
+Bolt-on infrastructure parts for the Skooter Base.
 
 ---
 
-### ✅ Step 2: Rename `origin` to `upstream` (still inside the template folder)
+## 🚀 Onboarding a New Customer
 
-```bash
-git remote rename origin upstream
-```
-
-This tells Git: "GitHub is the upstream template now."
+Use the `skooter.sh` script to initialize and manage your customer-specific Skooter infra repository.
 
 ---
 
-### ✅ Step 3: Point to your **Gitea thin repo** as the new `origin`
+### 📥 Step 1: Download the Script
+
+Run this in the directory where you want to manage Skooter repos:
 
 ```bash
-git remote add origin git@git.github.com:exampleorg/skooter-example-org-infra.git
-```
-
-Now your Git remotes look like this:
-
-```bash
-git remote -v
-```
-
-```
-origin    git@git.github.com:exampleorg/skooter-example-org-infra.git
-upstream  git@github.com:matthewsalla/skooter-infra.git
-```
+curl -O https://raw.githubusercontent.com/matthewsalla/skooter-infra/main/skooter.sh
+chmod +x skooter.sh
+````
 
 ---
 
-### ✅ Step 4: Push the repo to Gitea to initialize your thin repo
+### ⚙️ Step 2: Run the Script
+
+#### 🟢 First-Time Setup (`init`)
+
+This pushes a copy of the Skooter infra code into your private Gitea repository.
 
 ```bash
-git push -u origin main
+./skooter.sh init
 ```
 
-Now your Gitea thin repo (`skooter-example-org-infra`) has all the files from the GitHub template.
+#### 🔁 Updating from Template (`update`)
 
-You can now **delete this local clone** (or just move on).
-
----
-
-## 🔁 PHASE 2: Future Updates (when you want to pull updates from the template)
-
-Let’s say in a few days or weeks, you make updates to your GitHub `skooter-infra` repo and want those updates in your **thin repo** (in Gitea).
-
-### ✅ Step 1: Clone your thin repo (from Gitea)
+This pulls the latest template changes into your existing Gitea repo clone.
 
 ```bash
-git clone git@git.github.com:exampleorg/skooter-example-org-infra.git
-cd skooter-example-org-infra
-git submodule update --init --recursive
+./skooter.sh update
 ```
 
 ---
 
-### ✅ Step 2: Add the GitHub template as `upstream`
+### 📂 What It Does
 
-```bash
-git remote add upstream git@github.com:matthewsalla/skooter-infra.git
-git fetch upstream
-```
+The script will create **two folders** in your current working directory:
+
+* One for the **template content** (used temporarily during `init`)
+* One for the **customer-specific repo** (your actual working directory)
 
 ---
 
-### ✅ Step 3: Pull in updates from upstream
+### 🔐 Requirements
+
+* Git must be installed
+* SSH access to your private Gitea repository
+* Gitea repo must already exist and be accessible via SSH
+
+---
+
+### 📝 Example
 
 ```bash
-git merge upstream/main
+./skooter.sh init
+# => Creates: ./skooter-infra/ and pushes to Gitea
+
+./skooter.sh update
+# => Creates: ./skooter-example-org-infra/ and merges latest template changes
 ```
 
-Resolve any conflicts (if any), test, then:
-
-```bash
-git push origin main
-```
+You are now ready to work in the customer-specific infra repo.
 
 ---
 
